@@ -1,0 +1,22 @@
+server:
+  port: 9093
+
+spring:
+  application:
+    name: apigateway
+
+  main:
+    web-application-type: reactive
+
+  cloud:
+    gateway:
+      routes:
+
+        - id: alertservice
+          uri: http://localhost:9191
+          predicates:
+            - Path=/alertservice/**
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
