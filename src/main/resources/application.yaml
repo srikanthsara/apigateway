@@ -1,22 +1,62 @@
 server:
-  port: 9093
+  port: 9090
 
 spring:
+
   application:
     name: apigateway
 
-  main:
-    web-application-type: reactive
+  redis:
+    host: localhost
+    port: 6379
 
   cloud:
     gateway:
       routes:
 
-        - id: alertservice
-          uri: http://localhost:9191
+        - id: grocerysearchservice
+          uri: lb://grocerysearchservice
           predicates:
-            - Path=/alertservice/**
+            - Path=/products/**
+
+
+        - id: cartservice
+          uri: lb://cartservice
+          predicates:
+            - Path=/cart/**
+
+        - id: orderservice
+          uri: lb://orderservice
+          predicates:
+            - Path=/orders/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+
+        - id: paymentservice
+          uri: lb://paymentservice
+          predicates:
+            - Path=/payment/**
+
+eureka:
+
+  instance:
+    prefer-ip-address: true
+
+  client:
+    service-url:
+      defaultZone:
+        http://localhost:8761/eureka/
 
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+      include: gateway,health,info
