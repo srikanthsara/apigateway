@@ -14,11 +14,15 @@ spring:
     gateway:
       routes:
 
+        - id: authservice
+          uri: lb://authservice
+          predicates:
+            - Path=/auth/**
+
         - id: grocerysearchservice
           uri: lb://grocerysearchservice
           predicates:
             - Path=/products/**
-
 
         - id: cartservice
           uri: lb://cartservice
@@ -29,11 +33,6 @@ spring:
           uri: lb://orderservice
           predicates:
             - Path=/orders/**
-          filters:
-            - name: RequestRateLimiter
-              args:
-                redis-rate-limiter.replenishRate: 10
-                redis-rate-limiter.burstCapacity: 20
 
         - id: paymentservice
           uri: lb://paymentservice
@@ -59,4 +58,4 @@ management:
   endpoints:
     web:
       exposure:
-      include: gateway,health,info
+        include: gateway,health,info
