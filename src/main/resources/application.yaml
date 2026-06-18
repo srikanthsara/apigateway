@@ -1,61 +1,6 @@
-server:
-  port: 9090
-
 spring:
-
   application:
     name: apigateway
 
-  redis:
-    host: localhost
-    port: 6379
-
-  cloud:
-    gateway:
-      routes:
-
-        - id: authservice
-          uri: lb://authservice
-          predicates:
-            - Path=/auth/**
-
-        - id: grocerysearchservice
-          uri: lb://grocerysearchservice
-          predicates:
-            - Path=/products/**
-
-        - id: cartservice
-          uri: lb://cartservice
-          predicates:
-            - Path=/cart/**
-
-        - id: orderservice
-          uri: lb://orderservice
-          predicates:
-            - Path=/orders/**
-
-        - id: paymentservice
-          uri: lb://paymentservice
-          predicates:
-            - Path=/payment/**
-
-eureka:
-
-  instance:
-    prefer-ip-address: true
-
-  client:
-    service-url:
-      defaultZone:
-        http://localhost:8761/eureka/
-
-logging:
-  level:
-    org.springframework.cloud.gateway: DEBUG
-    reactor.netty.http.client: DEBUG
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: gateway,health,info
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
