@@ -3,9 +3,5 @@ spring:
     name: apigateway
 
   config:
-    import: optional:configserver:${CONFIG_SERVER_URL:http://configserver:8888}
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
 
-eureka:
-  client:
-    service-url:
-      defaultZone: ${EUREKA_URL}
